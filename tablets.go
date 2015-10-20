@@ -3,6 +3,7 @@ package reflect
 import (
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 const (
@@ -52,7 +53,7 @@ func (client *Client) Patch(keyspace, key string, criteria []string, body interf
 func (client *Client) Upsert(keyspace, key string, criteria []string, body interface{}) error {
 	req := client.newRequest("PATCH", tabletPath(keyspace, key), dump(body))
 	req.Header.Add(CriteriaHeaderName, strings.Join(criteria, ", "))
-	req.Header.Add(UpsertHeaderName, true)
+	req.Header.Add(UpsertHeaderName, "true")
 
 	_, err := client.do(req, http.StatusAccepted)
 	return err
