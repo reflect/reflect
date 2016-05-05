@@ -15,12 +15,12 @@ const (
 // A parameter you want to include when generating signed authentication tokens
 // for your clients.
 type Parameter struct {
-	// The name of the field you want to enforce authentication against.
+	// The name of the field this parameter applies to.
 	Field string
 
-	// The operation to apply when enforcing authentication.
+	// The operation to apply to this field and value.
 	Op ParameterOperation
 
-	// The value to use when enforcing authentication.
+	// The value to compare against.
 	Value string
 }
