@@ -24,7 +24,7 @@ func logError(format string, args ...interface{}) {
 }
 
 // Given a secret key and a set of parameters, generates a new signed
-// authentication token for using when authenticating clients.
+// authentication token for use when authenticating clients.
 //
 // Here is an example of how to generate a signed authentication token.
 //
