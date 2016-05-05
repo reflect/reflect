@@ -1,5 +1,6 @@
 package reflect
 
+// Different operations to match parameters with.
 type ParameterOperation string
 
 const (
@@ -11,8 +12,15 @@ const (
 	LessThanOrEqualsOperation    = ParameterOperation("<=")
 )
 
+// Represents a parameter you want to include when generating signed
+// authentication tokens for your clients.
 type Parameter struct {
+	// The field to match parameters based on.
 	Field string
-	Op    ParameterOperation
+
+	// The operation to apply.
+	Op ParameterOperation
+
+	// The vlaue to compare the field against using the operation.
 	Value string
 }

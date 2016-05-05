@@ -23,6 +23,8 @@ func logError(format string, args ...interface{}) {
 	Logger.Printf("ERROR: %s", fmt.Sprintf(format, args...))
 }
 
+// Given a secret key and a set of parameters, generates a new signed
+// authentication token for using when authenticing clients.
 func GenerateToken(secretKey string, parameters []Parameter) string {
 	var params []string
 
