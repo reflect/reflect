@@ -12,15 +12,15 @@ const (
 	LessThanOrEqualsOperation    = ParameterOperation("<=")
 )
 
-// Represents a parameter you want to include when generating signed
-// authentication tokens for your clients.
+// A parameter you want to include when generating signed authentication tokens
+// for your clients.
 type Parameter struct {
-	// The field to match parameters based on.
+	// The name of the field you want to enforce authentication against.
 	Field string
 
-	// The operation to apply.
+	// The operation to apply when enforcing authentication.
 	Op ParameterOperation
 
-	// The vlaue to compare the field against using the operation.
+	// The value to use when enforcing authentication.
 	Value string
 }

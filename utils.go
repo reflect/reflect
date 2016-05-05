@@ -25,6 +25,27 @@ func logError(format string, args ...interface{}) {
 
 // Given a secret key and a set of parameters, generates a new signed
 // authentication token for using when authenticing clients.
+//
+// An example of how to generate an authentication token.
+//
+//	package main
+//
+//	import (
+//	  "fmt"
+//	  "github.com/reflect/reflect"
+//	)
+//
+//	func main() {
+//	  params := []reflect.Parameter{
+//	    {
+//	      Field: "Field1",
+//	      Op:    reflect.EqualsOperation,
+//	      Value: "abc123",
+//	    },
+//	  }
+//
+//	  fmt.Printf("%s\n", reflect.GenerateToken("<Your Secret Key>", params))
+//	}
 func GenerateToken(secretKey string, parameters []Parameter) string {
 	var params []string
 
