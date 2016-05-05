@@ -28,24 +28,15 @@ func logError(format string, args ...interface{}) {
 //
 // An example of how to generate an authentication token.
 //
-//	package main
-//
-//	import (
-//	  "fmt"
-//	  "github.com/reflect/reflect"
-//	)
-//
-//	func main() {
-//	  params := []reflect.Parameter{
-//	    {
-//	      Field: "Field1",
-//	      Op:    reflect.EqualsOperation,
-//	      Value: "abc123",
-//	    },
-//	  }
-//
-//	  fmt.Printf("%s\n", reflect.GenerateToken("<Your Secret Key>", params))
+//	params := []reflect.Parameter{
+//	  {
+//	    Field: "Field1",
+//	    Op:    reflect.EqualsOperation,
+//	    Value: "abc123",
+//	  },
 //	}
+//
+//	reflect.GenerateToken("<Your Secret Key>", params)
 func GenerateToken(secretKey string, parameters []Parameter) string {
 	var params []string
 
