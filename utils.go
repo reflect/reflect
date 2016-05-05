@@ -36,7 +36,7 @@ func logError(format string, args ...interface{}) {
 //	  },
 //	}
 //
-//	reflect.GenerateToken("<Your Secret Key>", params)
+//	tok := reflect.GenerateToken("<Your Secret Key>", params)
 func GenerateToken(secretKey string, parameters []Parameter) string {
 	var params []string
 
