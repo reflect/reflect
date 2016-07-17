@@ -16,11 +16,11 @@ const (
 // for your clients.
 type Parameter struct {
 	// The name of the field this parameter applies to.
-	Field string
+	Field string `json:"field"`
 
 	// The operation to apply to this field and value.
-	Op ParameterOperation
+	Op ParameterOperation `json:"op"`
 
 	// The value to compare against.
-	Value string
+	Value string `json:"value"`
 }
