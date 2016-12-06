@@ -43,14 +43,34 @@ func GenerateToken(secretKey string, parameters []Parameter) string {
 	// For each of the parameters, we'll compile them in to a string with the
 	// required format.
 	for _, p := range parameters {
-		params = append(params, fmt.Sprintf("%s %s %s", p.Field, p.Op, p.Value))
+		// Put values in order since they're always ORed.
+		vals := make([]string, len(p.AnyValues))
+		copy(vals, p.AnyValues)
+		sort.Strings(vals)
+
+		enc := []interface{}{
+			p.Field,
+			p.Op,
+			p.Value,
+			vals,
+		}
+
+		v, err := json.Marshal(enc)
+		if err != nil {
+			logError("Could not encode token: %v", err)
+			return ""
+		}
+
+		params = append(params, string(v))
 	}
 
 	// Now that we have the params we need to sort them all.
 	sort.Strings(params)
 
-	mac := hmac.New(sha256.New, []byte(secretKey))
-	mac.Write([]byte(strings.Join(params, "\n")))
+	msg := []byte(fmt.Sprintf("V2\n%s", strings.Join(params, "\n")))
 
-	return base64.StdEncoding.EncodeToString(mac.Sum(nil))
+	mac := hmac.New(sha256.New, []byte(secretKey))
+	mac.Write(msg)
+
+	return fmt.Sprintf("=2=%s", base64.StdEncoding.EncodeToString(mac.Sum(nil)))
 }

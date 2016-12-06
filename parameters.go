@@ -23,4 +23,8 @@ type Parameter struct {
 
 	// The value to compare against.
 	Value string `json:"value"`
+
+	// A slice of possible values to compare against, any of which will be
+	// considered in the operation specified.
+	AnyValues []string `json:"any"`
 }
