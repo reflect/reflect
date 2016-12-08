@@ -51,6 +51,8 @@ params := []reflect.Param{
 generatedToken := reflect.GenerateToken(reflectApiToken, params)
 ```
 
+There are currently [five parameter-building operations available](https://godoc.org/github.com/reflect/reflect-go#pkg-constants).
+
 ## Example
 
 For a basic example of the Go Reflect library in action, see [`example/main.go`](/example/main.go).
