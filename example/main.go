@@ -4,15 +4,14 @@ import (
 	"github.com/kataras/iris"
 	"github.com/iris-contrib/middleware/basicauth"
 	"github.com/reflect/reflect-go"
+	"flag"
+	"os"
 )
-
-const (
-	reflectApiToken = "644adcaa-6da2-4570-976a-5c2b9fa63be8"
-)
-
 var (
+	reflectApiToken = flag.String("reflect-api-token", os.Getenv("REFLECT_API_TOKEN"), "An API token for your Reflect account")
+
 	users = map[string]string{
-		"colby": "pass",
+		"geoff": "beefsticks",
 	}
 )
 
@@ -22,7 +21,7 @@ type user struct {
 }
 
 func userHandler(ctx *iris.Context) {
-	username := ctx.Param("username")
+	username := ctx.GetString("user")
 
 	usernameParam := reflect.Parameter{
 		Field: "Username",
@@ -30,7 +29,7 @@ func userHandler(ctx *iris.Context) {
 		Value: username,
 	}
 
-	generatedToken := reflect.GenerateToken(reflectApiToken, []reflect.Parameter{usernameParam})
+	generatedToken := reflect.GenerateToken(*reflectApiToken, []reflect.Parameter{usernameParam})
 
 	user := user{
 		Username: username,
@@ -40,12 +39,20 @@ func userHandler(ctx *iris.Context) {
 	ctx.JSON(200, user)
 }
 
+func init() {
+	flag.Parse()
+
+	if *reflectApiToken == "" {
+		panic("You must supply an API token!")
+	}
+}
+
 func main() {
 	router := iris.New()
 
 	authMiddleware := basicauth.Default(users)
 
-	router.Get("/user/:username", authMiddleware, userHandler)
+	router.Get("/user", authMiddleware, userHandler)
 
 	router.Listen(":8080")
 }
