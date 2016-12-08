@@ -30,9 +30,27 @@ import (
 
 ## Generating User Tokens
 
-At the moment, this library is used for generating auth tokens for use in Reflect views. To generate new tokens, pass in a [token](https://app.reflect.io/tokens) to the [`GenerateToken`](https://godoc.org/github.com/reflect/reflect-go#GenerateToken) function along with any number of [parameters](#Parameters):
+At the moment, this library is used for generating auth tokens for use in Reflect views. To generate new tokens, pass in a [token](https://app.reflect.io/tokens) to the [`GenerateToken`](https://godoc.org/github.com/reflect/reflect-go#GenerateToken) function along with any number of [parameters](#Token-arameters):
 
 ```go
 reflectApiToken := "<Your API token>"
 generatedToken := reflect.GenerateToken(reflectApiToken, params)
 ```
+
+## Token parameters
+
+In addition to an API token, the [`GenerateToken`](https://godoc.org/github.com/reflect/reflect-go#GenerateToken) function also takes an array of [`Parameter`](https://godoc.org/github.com/reflect/reflect-go#Parameter)s that you can use to generate signed auth tokens. Here's an example:
+
+```go
+username, hobbies := "jane", []string{"fishing", "painting"}
+
+params := []reflect.Param{
+        {Field: "Username": reflect.EqualsOperation, Value: username},
+        {Field: "Hobbies": reflect.EqualsOperation, AnyValue: hobbies},
+}
+generatedToken := reflect.GenerateToken(reflectApiToken, params)
+```
+
+## Example
+
+For a basic example of the Go Reflect library in action, see [`example/main.go`](/example/main.go).
