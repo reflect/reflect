@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/kataras/iris"
-	"github.com/iris-contrib/middleware/basicauth"
-	"github.com/reflect/reflect-go"
 	"flag"
+	"github.com/iris-contrib/middleware/basicauth"
+	"github.com/kataras/iris"
+	"github.com/reflect/reflect-go"
 	"os"
 )
 
@@ -32,7 +32,7 @@ func UserHandler(ctx *iris.Context) {
 	// We'll build a token-generating parameter out of the user's username
 	usernameParam := reflect.Parameter{
 		Field: "Username",
-		Op: reflect.EqualsOperation,
+		Op:    reflect.EqualsOperation,
 		Value: username,
 	}
 
@@ -44,7 +44,7 @@ func UserHandler(ctx *iris.Context) {
 	// Now we return a JSON object to the client with information about the user, including the
 	// user-specific token
 	user := User{
-		Username: username,
+		Username:        username,
 		ReflectApiToken: generatedToken,
 	}
 
@@ -54,7 +54,7 @@ func UserHandler(ctx *iris.Context) {
 func init() {
 	flag.Parse()
 
-	if *reflectSecretKey == ""{
+	if *reflectSecretKey == "" {
 		panic("You must supply a secret key!")
 	}
 }
