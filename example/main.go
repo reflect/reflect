@@ -39,7 +39,7 @@ func UserHandler(ctx *iris.Context) {
 	tokenParams := []reflect.Parameter{usernameParam}
 
 	// Now we generate a user-specific token using the global API token and a parameter
-	generatedToken := reflect.GenerateToken(*reflectSecretKey, []reflect.Parameter{tokenParams})
+	generatedToken := reflect.GenerateToken(*reflectSecretKey, tokenParams)
 
 	// Now we return a JSON object to the client with information about the user, including the
 	// user-specific token
