@@ -9,8 +9,9 @@ import (
 )
 
 var (
-	// Pull a Reflect API token into the application either through a CLI flag or an env var
-	reflectApiToken = flag.String("reflect-api-token", os.Getenv("REFLECT_API_TOKEN"), "An API token for your Reflect account")
+	// Pull an access key and secret key for Reflect a into the application either through a CLI flag or an env var
+	// reflectAccessKey = flag.String("reflect-access-key", os.Getenv("REFLECT_ACCESS_KEY"), "An API token for your Reflect account")
+	reflectSecretKey = flag.String("reflect-secret-key", os.Getenv("REFLECT_SECRET_KEY"), "Secret")
 
 	// A list of username/password combos that will satisfy basic auth
 	users = map[string]string{
@@ -38,7 +39,7 @@ func UserHandler(ctx *iris.Context) {
 	tokenParams := []reflect.Parameter{usernameParam}
 
 	// Now we generate a user-specific token using the global API token and a parameter
-	generatedToken := reflect.GenerateToken(*reflectApiToken, []reflect.Parameter{tokenParams})
+	generatedToken := reflect.GenerateToken(*reflectSecretKey, []reflect.Parameter{tokenParams})
 
 	// Now we return a JSON object to the client with information about the user, including the
 	// user-specific token
@@ -53,8 +54,8 @@ func UserHandler(ctx *iris.Context) {
 func init() {
 	flag.Parse()
 
-	if *reflectApiToken == "" {
-		panic("You must supply an API token!")
+	if *reflectSecretKey == ""{
+		panic("You must supply a secret key!")
 	}
 }
 
