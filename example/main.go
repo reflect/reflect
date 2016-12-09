@@ -84,7 +84,7 @@ func main() {
 	authMiddleware := basicauth.Default(usersForAuth)
 
 	iris.Use(cors.Default())
-	iris.Static("/", "./static", 1)
+	iris.Static("/static", "./static", 1)
 	iris.Get("/users", authMiddleware, UserHandler)
 
 	iris.Listen(":8080")

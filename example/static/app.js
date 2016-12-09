@@ -1,13 +1,18 @@
 $(document).ready(function() {
-    %.ajax({
+    $.ajax({
         type: 'GET',
         url:  '/users',
         dataType: 'json',
-        async: false,
+        async: true,
         username: 'brad',
         password: 'beefsticks',
-        success: function(res) {
-            window.alert("It worked!");
+        success: function(user) {
+            var apiToken = user.apiToken;
+
+
+            window.reflect = {
+              tokens: apiToken
+            };
         }
     });
 });
