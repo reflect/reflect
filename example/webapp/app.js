@@ -1,0 +1,5 @@
+function main() {
+  $.ajax()
+}
+
+main();

@@ -8,47 +8,67 @@ import (
 	"os"
 )
 
-var (
-	// Pull an access key and secret key for Reflect a into the application either through a CLI flag or an env var
-	// reflectAccessKey = flag.String("reflect-access-key", os.Getenv("REFLECT_ACCESS_KEY"), "An API token for your Reflect account")
-	reflectSecretKey = flag.String("reflect-secret-key", os.Getenv("REFLECT_SECRET_KEY"), "Secret")
-
-	// A list of username/password combos that will satisfy basic auth
-	users = map[string]string{
-		"geoff": "beefsticks",
-	}
-)
 
 // A very simple user object
 type User struct {
 	Username        string `json:"username"`
-	ReflectApiToken string `json:"reflectApiToken"`
+	CompanyId       string `json:"companyId"`
+	ReflectApiToken string `json:"apiToken"`
 }
+
+var (
+	thisUser User
+
+	reflectSecretKey = flag.String("reflect-secret-key", os.Getenv("REFLECT_SECRET_KEY"), "Secret")
+
+	// A list of username/password combos that will satisfy basic auth
+	usersForAuth = map[string]string{
+		"geoff": "beefsticks",
+		"brad":  "beefsticks",
+		"alex":  "beefsticks",
+	}
+
+	users = []User{
+		{ Username: "geoff", CompanyId: "acme" },
+		{ Username: "brad",  CompanyId: "microsoft" },
+		{ Username: "alex",  CompanyId: "apple" },
+	}
+)
 
 // A handler for the /user endpoint
 func UserHandler(ctx *iris.Context) {
 	username := ctx.GetString("user")
 
-	// We'll build a token-generating parameter out of the user's username
+	userExists := false
+
+	for k, v := range users {
+		if v.Username == username {
+			userExists = true
+			thisUser = users[k]
+		}
+	}
+
+	if !userExists {
+		ctx.Text(404, "")
+	}
+
 	usernameParam := reflect.Parameter{
-		Field: "Username",
+		Field: "username",
 		Op:    reflect.EqualsOperation,
-		Value: username,
+		Value: thisUser.Username,
 	}
 
-	tokenParams := []reflect.Parameter{usernameParam}
-
-	// Now we generate a user-specific token using the global API token and a parameter
-	generatedToken := reflect.GenerateToken(*reflectSecretKey, tokenParams)
-
-	// Now we return a JSON object to the client with information about the user, including the
-	// user-specific token
-	user := User{
-		Username:        username,
-		ReflectApiToken: generatedToken,
+	companyParam := reflect.Parameter{
+		Field: "companyId",
+		Op:    reflect.EqualsOperation,
+		Value: thisUser.CompanyId,
 	}
 
-	ctx.JSON(200, user)
+	tokenGenParams := []reflect.Parameter{usernameParam, companyParam}
+	generatedToken := reflect.GenerateToken(*reflectSecretKey, tokenGenParams)
+	thisUser.ReflectApiToken = generatedToken
+
+	ctx.JSON(200, thisUser)
 }
 
 func init() {
@@ -62,8 +82,9 @@ func init() {
 func main() {
 	router := iris.New()
 
-	authMiddleware := basicauth.Default(users)
+	authMiddleware := basicauth.Default(usersForAuth)
 
+	router.StaticServe("./webapp", "/")
 	router.Get("/user", authMiddleware, UserHandler)
 
 	router.Listen(":8080")
