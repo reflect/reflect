@@ -2,10 +2,11 @@ package main
 
 import (
 	"flag"
-	"github.com/iris-contrib/middleware/basicauth"
 	"github.com/kataras/iris"
 	"github.com/reflect/reflect-go"
 	"os"
+	"github.com/iris-contrib/middleware/basicauth"
+	"github.com/iris-contrib/middleware/cors"
 )
 
 
@@ -80,12 +81,11 @@ func init() {
 }
 
 func main() {
-	router := iris.New()
-
 	authMiddleware := basicauth.Default(usersForAuth)
 
-	router.StaticServe("./webapp", "/")
-	router.Get("/user", authMiddleware, UserHandler)
+	iris.Use(cors.Default())
+	iris.Static("/", "./static", 1)
+	iris.Get("/users", authMiddleware, UserHandler)
 
-	router.Listen(":8080")
+	iris.Listen(":8080")
 }

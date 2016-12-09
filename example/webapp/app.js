@@ -1,5 +1,0 @@
-function main() {
-  $.ajax()
-}
-
-main();
