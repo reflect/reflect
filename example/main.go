@@ -5,7 +5,6 @@ import (
 	"github.com/kataras/iris"
 	"github.com/reflect/reflect-go"
 	"os"
-	"github.com/iris-contrib/middleware/basicauth"
 	"github.com/iris-contrib/middleware/cors"
 )
 
@@ -13,15 +12,16 @@ import (
 // A very simple user object
 type User struct {
 	Username        string `json:"username"`
-	CompanyId       string `json:"companyId"`
+	TopicOfInterest string `json:"topic"`
 	ReflectApiToken string `json:"apiToken"`
 }
 
 var (
-	thisUser User
+	//thisUser User
 
 	reflectSecretKey = flag.String("reflect-secret-key", os.Getenv("REFLECT_SECRET_KEY"), "Secret")
 
+	/*
 	// A list of username/password combos that will satisfy basic auth
 	usersForAuth = map[string]string{
 		"geoff": "beefsticks",
@@ -34,10 +34,12 @@ var (
 		{ Username: "brad",  CompanyId: "microsoft" },
 		{ Username: "alex",  CompanyId: "apple" },
 	}
+	*/
 )
 
 // A handler for the /user endpoint
 func UserHandler(ctx *iris.Context) {
+	/*
 	username := ctx.GetString("user")
 
 	userExists := false
@@ -52,24 +54,30 @@ func UserHandler(ctx *iris.Context) {
 	if !userExists {
 		ctx.Text(404, "")
 	}
+	*/
+
+	user := User{
+		Username: "noah",
+		TopicOfInterest: "linux",
+	}
 
 	usernameParam := reflect.Parameter{
 		Field: "username",
 		Op:    reflect.EqualsOperation,
-		Value: thisUser.Username,
+		Value: user.Username,
 	}
 
-	companyParam := reflect.Parameter{
-		Field: "companyId",
+	topicParam := reflect.Parameter{
+		Field: "topic",
 		Op:    reflect.EqualsOperation,
-		Value: thisUser.CompanyId,
+		Value: user.TopicOfInterest,
 	}
 
-	tokenGenParams := []reflect.Parameter{usernameParam, companyParam}
+	tokenGenParams := []reflect.Parameter{usernameParam, topicParam}
 	generatedToken := reflect.GenerateToken(*reflectSecretKey, tokenGenParams)
-	thisUser.ReflectApiToken = generatedToken
+	user.ReflectApiToken = generatedToken
 
-	ctx.JSON(200, thisUser)
+	ctx.JSON(200, user)
 }
 
 func init() {
@@ -81,11 +89,12 @@ func init() {
 }
 
 func main() {
-	authMiddleware := basicauth.Default(usersForAuth)
+	//authMiddleware := basicauth.Default(usersForAuth)
 
 	iris.Use(cors.Default())
 	iris.Static("/static", "./static", 1)
-	iris.Get("/users", authMiddleware, UserHandler)
+	//iris.Get("/users", authMiddleware, UserHandler)
+	iris.Get("/users", UserHandler)
 
 	iris.Listen(":8080")
 }
