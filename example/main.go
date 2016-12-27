@@ -6,6 +6,8 @@ import (
 	"github.com/reflect/reflect-go"
 	"os"
 	"github.com/iris-contrib/middleware/cors"
+	"github.com/iris-contrib/middleware/basicauth"
+	"net/http"
 )
 
 
@@ -21,63 +23,43 @@ var (
 
 	reflectSecretKey = flag.String("reflect-secret-key", os.Getenv("REFLECT_SECRET_KEY"), "Secret")
 
-	/*
 	// A list of username/password combos that will satisfy basic auth
-	usersForAuth = map[string]string{
-		"geoff": "beefsticks",
-		"brad":  "beefsticks",
-		"alex":  "beefsticks",
+	authorizedUsers = map[string]string{
+		"user": "pass",
 	}
-
-	users = []User{
-		{ Username: "geoff", CompanyId: "acme" },
-		{ Username: "brad",  CompanyId: "microsoft" },
-		{ Username: "alex",  CompanyId: "apple" },
-	}
-	*/
 )
 
 // A handler for the /user endpoint
 func UserHandler(ctx *iris.Context) {
-	/*
-	username := ctx.GetString("user")
+	username, password := ctx.GetString("user"), ctx.GetString("password")
 
-	userExists := false
+	if username == "user" && password == "pass" {
 
-	for k, v := range users {
-		if v.Username == username {
-			userExists = true
-			thisUser = users[k]
+		user := User{
+			Username: "noah",
+			TopicOfInterest: "linux",
 		}
+
+		usernameParam := reflect.Parameter{
+			Field: "username",
+			Op:    reflect.EqualsOperation,
+			Value: user.Username,
+		}
+
+		topicParam := reflect.Parameter{
+			Field: "topic",
+			Op:    reflect.EqualsOperation,
+			Value: user.TopicOfInterest,
+		}
+
+		tokenGenParams := []reflect.Parameter{usernameParam, topicParam}
+		generatedToken := reflect.GenerateToken(*reflectSecretKey, tokenGenParams)
+		user.ReflectApiToken = generatedToken
+
+		ctx.JSON(200, user)
 	}
 
-	if !userExists {
-		ctx.Text(404, "")
-	}
-	*/
-
-	user := User{
-		Username: "noah",
-		TopicOfInterest: "linux",
-	}
-
-	usernameParam := reflect.Parameter{
-		Field: "username",
-		Op:    reflect.EqualsOperation,
-		Value: user.Username,
-	}
-
-	topicParam := reflect.Parameter{
-		Field: "topic",
-		Op:    reflect.EqualsOperation,
-		Value: user.TopicOfInterest,
-	}
-
-	tokenGenParams := []reflect.Parameter{usernameParam, topicParam}
-	generatedToken := reflect.GenerateToken(*reflectSecretKey, tokenGenParams)
-	user.ReflectApiToken = generatedToken
-
-	ctx.JSON(200, user)
+	ctx.Error("", http.StatusUnauthorized)
 }
 
 func init() {
@@ -89,11 +71,13 @@ func init() {
 }
 
 func main() {
-	//authMiddleware := basicauth.Default(usersForAuth)
+	iris.Logger.Printf("Using secret key: %s", *reflectSecretKey)
+
+	authMiddleware := basicauth.Default(authorizedUsers)
+	iris.Use(authMiddleware)
 
 	iris.Use(cors.Default())
 	iris.Static("/static", "./static", 1)
-	//iris.Get("/users", authMiddleware, UserHandler)
 	iris.Get("/users", UserHandler)
 
 	iris.Listen(":8080")
