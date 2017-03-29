@@ -1,6 +1,2 @@
 # Development
 *.sw[onp]
-
-# Example project artifacts
-example/.idea
-example/*.iml
