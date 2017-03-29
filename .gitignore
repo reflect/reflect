@@ -1,2 +1,6 @@
 # Development
 *.sw[onp]
+
+# IntelliJ artifacts
+.idea/
+*.iml
