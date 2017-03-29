@@ -33,7 +33,7 @@ import (
 At the moment, this library is used for generating auth tokens for use in Reflect views. To generate new tokens, pass in a [token](https://app.reflect.io/tokens) to the [`GenerateToken`](https://godoc.org/github.com/reflect/reflect-go#GenerateToken) function along with any number of [parameters](#Token-arameters):
 
 ```go
-reflectApiToken := "<Your API token>"
+reflectSecretKey := "<Your project's secret key>"
 generatedToken := reflect.GenerateToken(reflectApiToken, params)
 ```
 
@@ -45,8 +45,8 @@ In addition to an API token, the [`GenerateToken`](https://godoc.org/github.com/
 username, hobbies := "jane", []string{"fishing", "painting"}
 
 params := []reflect.Param{
-        {Field: "Username": reflect.EqualsOperation, Value: username},
-        {Field: "Hobbies": reflect.EqualsOperation, AnyValue: hobbies},
+        {Field: "Username", Op: reflect.EqualsOperation, Value: username},
+        {Field: "Hobbies", Op: reflect.EqualsOperation, AnyValue: hobbies},
 }
 generatedToken := reflect.GenerateToken(reflectApiToken, params)
 ```
