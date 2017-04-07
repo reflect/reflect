@@ -11,6 +11,7 @@ const (
 	LessThanOperation            = ParameterOperation("<")
 	LessThanOrEqualsOperation    = ParameterOperation("<=")
 	ContainsOperation            = ParameterOperation("=~")
+	NotContainsOperation         = ParameterOperation("!~")
 )
 
 // A parameter you want to include when generating signed authentication tokens
