@@ -8,8 +8,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
+	"log"
 	"sort"
 	"strings"
+)
+
+var (
+	Logger = log.New(ioutil.Discard, "", 0)
 )
 
 func dump(i interface{}) io.Reader {
