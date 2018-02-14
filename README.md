@@ -28,31 +28,21 @@ import (
 )
 ```
 
-## Generating User Tokens
+## Generating Authentication Tokens
 
-At the moment, this library is used for generating auth tokens for use in Reflect views. To generate new tokens, pass in a [token](https://app.reflect.io/tokens) to the [`GenerateToken`](https://godoc.org/github.com/reflect/reflect-go#GenerateToken) function along with any number of [parameters](#Token-arameters):
-
-```go
-reflectSecretKey := "<Your project's secret key>"
-generatedToken := reflect.GenerateToken(reflectApiToken, params)
-```
-
-## Token parameters
-
-In addition to an API token, the [`GenerateToken`](https://godoc.org/github.com/reflect/reflect-go#GenerateToken) function also takes an array of [`Parameter`](https://godoc.org/github.com/reflect/reflect-go#Parameter)s that you can use to generate signed auth tokens. Here's an example:
+At the moment, this library is used for generating authentication tokens for use in Reflect views. To generate new tokens:
 
 ```go
-username, hobbies := "jane", []string{"fishing", "painting"}
+accessKey := "d232c1e5-6083-4aa7-9042-0547052cc5dd"
+secretKey := "74678a9b-685c-4c14-ac45-7312fe29de06"
 
-params := []reflect.Param{
-        {Field: "Username", Op: reflect.EqualsOperation, Value: username},
-        {Field: "Hobbies", Op: reflect.EqualsOperation, AnyValue: hobbies},
-}
-generatedToken := reflect.GenerateToken(reflectApiToken, params)
+token, err := reflect.NewProjectTokenBuilder(accessKey).
+    WithAttribute("user-id", 1234).
+    WithAttribute("user-name", "Billy Bob").
+    WithParameter(reflect.Parameter{
+        Field: "My Field",
+        Op: reflect.EqualsOperation,
+        Value: "My Value",
+    }).
+    Build(secretKey)
 ```
-
-There are currently [five parameter-building operations available](https://godoc.org/github.com/reflect/reflect-go#pkg-constants).
-
-## Example
-
-For a basic example of the Go Reflect library in action, see [`example/main.go`](/example/main.go).
